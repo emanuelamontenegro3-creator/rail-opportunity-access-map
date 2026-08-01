@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accessibility to opportunities via long-distance rail services</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    html, body { height: 100%; margin: 0; font-family: "Times New Roman", Times, serif; background: #06172b; }
+    #app { display: grid; grid-template-rows: auto 1fr; height: 100%; background: #06172b; color: #f2f6fb; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 12px 14px; align-items: center; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.18); background: #09233f; box-shadow: 0 1px 8px rgba(0,0,0,0.28); }
+    .toolbar h1 { font-size: 20px; margin: 0 16px 0 0; font-weight: 600; color: #fff; }
+    label { font-size: 15px; color: #edf4fb; }
+    select { font-family: inherit; font-size: 15px; padding: 4px 8px; color: #102033; background: #f7fbff; border: 1px solid #b8c9da; border-radius: 3px; }
+    .check { display: inline-flex; align-items: center; gap: 5px; }
+    #summary { color: #d6e5f4; }
+    #map { width: 100%; height: 100%; background: #ffffff; }
+    .legend, .info-box { padding: 10px 11px; background: rgba(255,255,255,0.94); color: #17202a; border: 1px solid #d1d3d4; box-shadow: 0 2px 8px rgba(0,0,0,0.18); line-height: 1.25; font-size: 14px; border-radius: 4px; }
+    .legend-title { font-weight: 600; margin-bottom: 6px; text-transform: lowercase; }
+    .legend-row { display: flex; align-items: center; gap: 7px; margin: 3px 0; }
+    .swatch { width: 16px; height: 12px; border: 1px solid rgba(0,0,0,0.28); }
+    .info-box { max-width: 390px; }
+    .info-box button { font-family: inherit; color: #17202a; background: transparent; border: 0; padding: 0; font-weight: 600; font-size: 15px; cursor: pointer; }
+    .info-content { display: none; margin-top: 7px; color: #26313d; }
+    .info-box.open .info-content { display: block; }
+    .city-label { color: #3f4650; font-family: "Times New Roman", Times, serif; font-size: 13px; text-shadow: 0 1px 3px #ffffff, 1px 0 3px #ffffff, -1px 0 3px #ffffff; }
+    .leaflet-popup-content { font-family: "Times New Roman", Times, serif; font-size: 14px; }
+    .leaflet-control-scale-line { background: rgba(255,255,255,0.9); color: #17202a; border-color: #aeb6bf; }
+    .leaflet-control-zoom a { background: #f7fbff; color: #102033; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="toolbar">
+    <h1>Accessibility to opportunities via long-distance rail services</h1>
+    <label>Origin
+      <select id="originSelect">
+          <option value="alessandria">Alessandria</option>
+          <option value="ancona">Ancona</option>
+          <option value="arezzo">Arezzo</option>
+          <option value="asti">Asti</option>
+          <option value="bari">Bari</option>
+          <option value="barletta">Barletta</option>
+          <option value="bologna">Bologna</option>
+          <option value="bolzano_bozen">Bolzano/Bozen</option>
+          <option value="brescia">Brescia</option>
+          <option value="brindisi">Brindisi</option>
+          <option value="caserta">Caserta</option>
+          <option value="cesena">Cesena</option>
+          <option value="como">Como</option>
+          <option value="ferrara">Ferrara</option>
+          <option value="firenze">Firenze</option>
+          <option value="foggia">Foggia</option>
+          <option value="forli">Forli</option>
+          <option value="genova">Genova</option>
+          <option value="grosseto">Grosseto</option>
+          <option value="la_spezia">La Spezia</option>
+          <option value="lamezia_terme">Lamezia Terme</option>
+          <option value="latina">Latina</option>
+          <option value="lecce">Lecce</option>
+          <option value="livorno">Livorno</option>
+          <option value="massa">Massa</option>
+          <option value="milano">Milano</option>
+          <option value="modena">Modena</option>
+          <option value="napoli">Napoli</option>
+          <option value="novara">Novara</option>
+          <option value="padova">Padova</option>
+          <option value="parma">Parma</option>
+          <option value="pavia">Pavia</option>
+          <option value="perugia">Perugia</option>
+          <option value="pesaro">Pesaro</option>
+          <option value="pescara">Pescara</option>
+          <option value="piacenza">Piacenza</option>
+          <option value="pisa">Pisa</option>
+          <option value="potenza">Potenza</option>
+          <option value="ravenna">Ravenna</option>
+          <option value="reggio_di_calabria">Reggio di Calabria</option>
+          <option value="reggio_nell_emilia">Reggio nell'Emilia</option>
+          <option value="rimini">Rimini</option>
+          <option value="roma">Roma</option>
+          <option value="salerno">Salerno</option>
+          <option value="taranto">Taranto</option>
+          <option value="terni">Terni</option>
+          <option value="torino">Torino</option>
+          <option value="trento">Trento</option>
+          <option value="treviso">Treviso</option>
+          <option value="trieste">Trieste</option>
+          <option value="udine">Udine</option>
+          <option value="venezia">Venezia</option>
+          <option value="verona">Verona</option>
+          <option value="vicenza">Vicenza</option>
+      </select>
+    </label>
+    <label>Category
+      <select id="categorySelect">
+          <option value="healthcare">Healthcare</option>
+          <option value="knowledge">Knowledge-intensive jobs</option>
+          <option value="leisure">Leisure</option>
+          <option value="tourism">Tourism</option>
+          <option value="university">Universities and research</option>
+      </select>
+    </label>
+    <label class="check"><input type="checkbox" id="showRailway" checked> railway network</label>
+    <label class="check"><input type="checkbox" id="showCities" checked> city labels</label>
+    <span id="summary">visual-only public version</span>
+  </div>
+  <div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data/public_metadata.js"></script>
+<script src="data/italy_regions.js"></script>
+<script src="data/railway.js"></script>
+<script src="data/cities_public.js"></script>
+<script src="data/origins_public.js"></script>
+<script src="data/overlay_bundles/healthcare_01.js"></script>
+<script src="data/overlay_bundles/healthcare_02.js"></script>
+<script src="data/overlay_bundles/healthcare_03.js"></script>
+<script src="data/overlay_bundles/healthcare_04.js"></script>
+<script src="data/overlay_bundles/healthcare_05.js"></script>
+<script src="data/overlay_bundles/healthcare_06.js"></script>
+<script src="data/overlay_bundles/healthcare_07.js"></script>
+<script src="data/overlay_bundles/healthcare_08.js"></script>
+<script src="data/overlay_bundles/healthcare_09.js"></script>
+<script src="data/overlay_bundles/knowledge_01.js"></script>
+<script src="data/overlay_bundles/knowledge_02.js"></script>
+<script src="data/overlay_bundles/knowledge_03.js"></script>
+<script src="data/overlay_bundles/knowledge_04.js"></script>
+<script src="data/overlay_bundles/knowledge_05.js"></script>
+<script src="data/overlay_bundles/knowledge_06.js"></script>
+<script src="data/overlay_bundles/knowledge_07.js"></script>
+<script src="data/overlay_bundles/knowledge_08.js"></script>
+<script src="data/overlay_bundles/leisure_01.js"></script>
+<script src="data/overlay_bundles/leisure_02.js"></script>
+<script src="data/overlay_bundles/leisure_03.js"></script>
+<script src="data/overlay_bundles/leisure_04.js"></script>
+<script src="data/overlay_bundles/leisure_05.js"></script>
+<script src="data/overlay_bundles/leisure_06.js"></script>
+<script src="data/overlay_bundles/leisure_07.js"></script>
+<script src="data/overlay_bundles/leisure_08.js"></script>
+<script src="data/overlay_bundles/leisure_09.js"></script>
+<script src="data/overlay_bundles/leisure_10.js"></script>
+<script src="data/overlay_bundles/leisure_11.js"></script>
+<script src="data/overlay_bundles/leisure_12.js"></script>
+<script src="data/overlay_bundles/leisure_13.js"></script>
+<script src="data/overlay_bundles/leisure_14.js"></script>
+<script src="data/overlay_bundles/leisure_15.js"></script>
+<script src="data/overlay_bundles/leisure_16.js"></script>
+<script src="data/overlay_bundles/leisure_17.js"></script>
+<script src="data/overlay_bundles/leisure_18.js"></script>
+<script src="data/overlay_bundles/tourism_01.js"></script>
+<script src="data/overlay_bundles/tourism_02.js"></script>
+<script src="data/overlay_bundles/tourism_03.js"></script>
+<script src="data/overlay_bundles/tourism_04.js"></script>
+<script src="data/overlay_bundles/tourism_05.js"></script>
+<script src="data/overlay_bundles/tourism_06.js"></script>
+<script src="data/overlay_bundles/tourism_07.js"></script>
+<script src="data/overlay_bundles/tourism_08.js"></script>
+<script src="data/overlay_bundles/tourism_09.js"></script>
+<script src="data/overlay_bundles/tourism_10.js"></script>
+<script src="data/overlay_bundles/tourism_11.js"></script>
+<script src="data/overlay_bundles/tourism_12.js"></script>
+<script src="data/overlay_bundles/tourism_13.js"></script>
+<script src="data/overlay_bundles/tourism_14.js"></script>
+<script src="data/overlay_bundles/tourism_15.js"></script>
+<script src="data/overlay_bundles/tourism_16.js"></script>
+<script src="data/overlay_bundles/tourism_17.js"></script>
+<script src="data/overlay_bundles/tourism_18.js"></script>
+<script src="data/overlay_bundles/tourism_19.js"></script>
+<script src="data/overlay_bundles/tourism_20.js"></script>
+<script src="data/overlay_bundles/tourism_21.js"></script>
+<script src="data/overlay_bundles/tourism_22.js"></script>
+<script src="data/overlay_bundles/tourism_23.js"></script>
+<script src="data/overlay_bundles/tourism_24.js"></script>
+<script src="data/overlay_bundles/tourism_25.js"></script>
+<script src="data/overlay_bundles/tourism_26.js"></script>
+<script src="data/overlay_bundles/tourism_27.js"></script>
+<script src="data/overlay_bundles/university_01.js"></script>
+<script src="data/overlay_bundles/university_02.js"></script>
+<script src="data/overlay_bundles/university_03.js"></script>
+<script src="data/overlay_bundles/university_04.js"></script>
+<script src="data/overlay_bundles/university_05.js"></script>
+<script src="data/overlay_bundles/university_06.js"></script>
+<script src="data/overlay_bundles/university_07.js"></script>
+<script>
+const map = L.map('map', { zoomControl: true, preferCanvas: true });
+L.control.scale({ metric: true, imperial: false }).addTo(map);
+
+map.createPane('regionsPane');
+map.getPane('regionsPane').style.zIndex = 200;
+map.createPane('hexPane');
+map.getPane('hexPane').style.zIndex = 430;
+map.createPane('railPane');
+map.getPane('railPane').style.zIndex = 500;
+map.createPane('cityPane');
+map.getPane('cityPane').style.zIndex = 600;
+
+let overlayLayer = null;
+let currentOverlayUrl = null;
+let cityLayer = null;
+let originLayer = null;
+const regionsLayer = L.geoJSON(window.ITALY_REGIONS, {
+  pane: 'regionsPane',
+  style: { color: '#edf1f4', weight: 0.45, opacity: 1, fillColor: '#edf1f4', fillOpacity: 1 }
+}).addTo(map);
+const railwayLayer = L.geoJSON(window.RAILWAY_LINES, {
+  pane: 'railPane',
+  style: { color: '#7b4b4b', weight: 0.58, opacity: 0.66 }
+}).addTo(map);
+
+function safeKey() { return document.getElementById('originSelect').value; }
+function categoryKey() { return document.getElementById('categorySelect').value; }
+
+function selectedOriginFeature(originKey) {
+  return window.ORIGINS_PUBLIC.features.find(f => f.properties && f.properties.origin_key === originKey);
+}
+
+function updateMap() {
+  const origin = safeKey();
+  const cat = categoryKey();
+  const meta = window.PUBLIC_REACHABILITY_META.origins[origin];
+  const catMeta = meta.overlays[cat];
+  const bounds = window.PUBLIC_REACHABILITY_META.bounds;
+  const imageBounds = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]];
+
+  if (overlayLayer) map.removeLayer(overlayLayer);
+  if (originLayer) map.removeLayer(originLayer);
+  if (cityLayer) map.removeLayer(cityLayer);
+
+  if (currentOverlayUrl) URL.revokeObjectURL(currentOverlayUrl);
+  const svgText = window.OVERLAY_SVGS?.[cat]?.[origin];
+  if (!svgText) {
+    throw new Error(`Missing overlay for ${origin} / ${cat}`);
+  }
+  currentOverlayUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
+  overlayLayer = L.imageOverlay(currentOverlayUrl, imageBounds, { opacity: 1, interactive: false, pane: 'hexPane' }).addTo(map);
+
+  cityLayer = L.geoJSON(window.CITIES_PUBLIC, {
+    pane: 'cityPane',
+    pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+      radius: 2.8, color: '#231515', weight: 0.5, fillColor: '#8a8a8a', fillOpacity: 0.82
+    }),
+    onEachFeature: (feature, layer) => layer.bindTooltip((feature.properties || {}).city_label || '', { permanent: true, direction: 'right', className: 'city-label' })
+  });
+
+  const originFeature = selectedOriginFeature(origin);
+  originLayer = L.geoJSON(originFeature, {
+    pane: 'cityPane',
+    pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+      radius: 8, color: '#ff1493', weight: 3, fillColor: '#ff1493', fillOpacity: 0.95
+    }),
+    onEachFeature: (feature, layer) => layer.bindTooltip(meta.label, { permanent: true, direction: 'right', className: 'city-label' })
+  }).addTo(map);
+
+  if (document.getElementById('showCities').checked) cityLayer.addTo(map);
+  if (document.getElementById('showRailway').checked) railwayLayer.addTo(map); else map.removeLayer(railwayLayer);
+
+  document.getElementById('summary').textContent = `${meta.label} - ${catMeta.label}`;
+  map.fitBounds(imageBounds);
+}
+
+for (const id of ['originSelect', 'categorySelect', 'showRailway', 'showCities']) {
+  document.getElementById(id).addEventListener('change', updateMap);
+}
+
+const legend = L.control({ position: 'bottomright' });
+legend.onAdd = function() {
+  const div = L.DomUtil.create('div', 'legend');
+  div.innerHTML = `
+    <div class="legend-title">accessibility to opportunities</div>
+    <div class="legend-row"><span class="swatch" style="background:#8f8f8f"></span>Not reachable within 240 min</div>
+    <div class="legend-row"><span class="swatch" style="background:#c7f5bd"></span>Very low</div>
+    <div class="legend-row"><span class="swatch" style="background:#b4e5ad"></span>Low</div>
+    <div class="legend-row"><span class="swatch" style="background:#5cc76d"></span>Medium</div>
+    <div class="legend-row"><span class="swatch" style="background:#009a45"></span>High</div>
+    <div class="legend-row"><span class="swatch" style="background:#004d1f"></span>Very high</div>
+  `;
+  return div;
+};
+legend.addTo(map);
+
+const info = L.control({ position: 'topleft' });
+info.onAdd = function() {
+  const div = L.DomUtil.create('div', 'info-box');
+  div.innerHTML = `<button type="button" id="infoToggle">About this map</button><div class="info-content">This interactive map explores category-specific access to urban opportunities via long-distance rail. After selecting an origin city and an opportunity category, each hexagon represents a destination opportunity centroid. Green hexagons are reachable within the 240-minute door-to-door threshold; darker shades indicate higher impedance-based reachability. Grey hexagons are not reachable within the threshold. Door-to-door time includes car-based first and last mile, average long-distance rail travel time, and expected waiting time derived from service frequency in the peak (06:00-09:00) and off-peak (14:00-17:00) periods.</div>`;
+  L.DomEvent.disableClickPropagation(div);
+  return div;
+};
+info.addTo(map);
+setTimeout(() => {
+  const box = document.querySelector('.info-box');
+  const button = document.getElementById('infoToggle');
+  if (box && button) button.addEventListener('click', () => box.classList.toggle('open'));
+}, 0);
+
+updateMap();
+</script>
+</body>
+</html>
